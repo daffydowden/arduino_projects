@@ -27,7 +27,7 @@ const int speaker = 12;
 
 int countdownTime = 10; // Time in seconds to countdown from
 
-int status = 0; // Device status
+int status; // Device status
 
 // Setup
 void setup(){
@@ -44,54 +44,48 @@ void setup(){
   // Setup ON Switch
   pinMode(startPin, INPUT);
   digitalWrite(startPin, HIGH); // turn on internal pull-up resistor
+  attachInterrupt(0, activate, RISING);
+  
   // Setup RESET Swtich
   pinMode(resetPin, INPUT);
   digitalWrite(resetPin, HIGH); // turn on internal pull-up resistor
+  attachInterrupt(1, reset, RISING);
+  
+  status = 0;
 }
 
 
-void loop(){
-  // Check pin values  
-  int onVal = digitalRead(startPin);
-  int resetVal = digitalRead(resetPin);
-  
-  // Check ON switch
-  if (onVal == LOW){
-    // Check status
-    if (status == 0) {
-      activate();
-    }
-  }
-  // Check RESET switch
-  if (resetVal == LOW){
-    // Check status
-    if (status == 1) {
-      reset();
-    }
-  }
-  
-  // If active, countdown
-  if (status == 1){
-    for(int i = countdownTime; i >= 0; i--){
+void loop(){  
+  for(int i = countdownTime; i >= 0; i--){
+    // If active, countdown
+    if (status == 1){
       tick(i);
+    } else {
+      // Defused
+      return;
     }
-    explode();
   }
+  explode();
 }
 
 // Activate countdown
 void activate() {
-  // Turn on Active LED
-  digitalWrite(activePin, HIGH);
-  Serial.println("ACTIVATED");
-  status = 1;
+  if (status == 0) {
+    // Turn on Active LED
+    digitalWrite(activePin, HIGH);
+    Serial.println("ACTIVATED");
+    status = 1;
+  }
 }
 
 // Soft reset of system
 void reset() {
-  digitalWrite(activePin, LOW);
-  Serial.println("DEACTIVATED");
-  status = 0;
+  // Check status
+  if (status == 1) {
+    digitalWrite(activePin, LOW);
+    Serial.println("DEACTIVATED");
+    status = 0;
+  }
 }
 
 void explode(){
