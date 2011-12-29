@@ -55,7 +55,7 @@ void setup(){
 }
 
 
-void loop(){  
+void loop(){
   for(int i = countdownTime; i >= 0; i--){
     // If active, countdown
     if (status == 1){
@@ -115,15 +115,12 @@ void explode(){
 }
 
 void tick(int time) {
-  Serial.println(time);
-      
   int x = floor(time/2);
   int noteDuration = 1000/duration[x];
   tone(speaker, notes[x], noteDuration);
-  
+  lights(time);
   delay(1000);
   noTone(speaker);
-  lights(time);
 }
 
 void lights(int time){
