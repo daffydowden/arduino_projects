@@ -84,6 +84,17 @@ void reset() {
   if (status == 1) {
     digitalWrite(activePin, LOW);
     Serial.println("DEACTIVATED");
+
+    digitalWrite(grn1, LOW);
+    digitalWrite(yel1, LOW);
+    digitalWrite(yel2, LOW);
+    digitalWrite(red1, LOW);
+    digitalWrite(red2, LOW);
+    
+    status = 0;
+  } else if (status == -1) {
+    digitalWrite(red1, LOW);
+    digitalWrite(red2, LOW);
     status = 0;
   }
 }
@@ -100,7 +111,7 @@ void explode(){
   noTone(speaker);
   
   Serial.println("BOOM!");
-  status = 0;
+  status = -1;
 }
 
 void tick(int time) {
@@ -112,7 +123,6 @@ void tick(int time) {
   
   delay(1000);
   noTone(speaker);
-  
   lights(time);
 }
 
